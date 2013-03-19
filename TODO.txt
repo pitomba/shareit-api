@@ -1,0 +1,2 @@
+Make qrwrapper a context manager?
+Write tornado tests

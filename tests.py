@@ -11,9 +11,12 @@ sys.path.append(os.path.join(APP_ROOT, '..'))
 
 import server
 
+import qrwrapper
+
 #tornado.options.parse_config_file(os.path.join(APP_ROOT, 'config', 'test.py'))
 
 class TestHandlerBase(AsyncHTTPTestCase):
+
     def setUp(self):
         super(TestHandlerBase, self).setUp()
 
@@ -28,6 +31,7 @@ class TestHandlerBase(AsyncHTTPTestCase):
         return Application([('/qrcode', server.MainHandler)])
 
 class TestBucketHandler(TestHandlerBase):
+
     def test_create_qrcode(self):
         get_args = {'msg': 'andreaugusto'}
 
@@ -39,14 +43,14 @@ class TestBucketHandler(TestHandlerBase):
                         )
         print response
 
-        self.assertEqual(response.code, 200)
-'''
-def test_homepage(self):
-    # The following two lines are equivalent to
-    #   response = self.fetch('/')
-    # but are shown in full here to demonstrate explicit use
-    # of self.stop and self.wait.
-    self.http_client.fetch(self.get_url('/'), self.stop)
-    response = self.wait()
-    # test contents of response
-'''
+        #self.assertEqual(response.code, 200)
+
+class TestImageCreator(unittest.TestCase):
+    
+    def test_image_creation(self):
+        test_string = 'shareit msg'
+        qr_path = qrwrapper.get_new_qrcode_path(test_string)
+        self.assertNotEqual(qr_path, None)
+
+if __name__ == '__main__':
+    unittest.main()
