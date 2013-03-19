@@ -1,19 +1,29 @@
 import tornado.ioloop
-import tornado.web
-import qrcode
+from tornado.web import RequestHandler
+import qrwrapper
 
-class MainHandler(tornado.web.RequestHandler):
+class CreateQRCodeHandler(RequestHandler):
+
+    QRCODE_HEADERS = [
+                      ('Content-Type', 'image/jpeg'),
+                      ('Content-Disposition', 'attachment; filename=qrcode.jpeg'),
+                     ]
+
     def get(self):
         msg = self.get_argument("msg", default=None, strip=False)
-        image = qrcode.make(msg)
-        image.save("qrcode.jpeg")
-        self.set_header ('Content-Type', 'image/jpeg')
-        self.set_header ('Content-Disposition', 'attachment; filename=qrcode.jpeg')
-        with open("qrcode.jpeg", 'r') as img:
+
+        self._apply_headers()
+        
+        with open(qrwrapper.get_new_qrcode_path(msg), 'r') as img:
             self.write(img.read())
 
+    def _apply_headers(self):
+        for header in self.QRCODE_HEADERS:
+            self.set_header(*header)
+        
+
 application = tornado.web.Application([
-    (r"/qrcode", MainHandler),
+    (r"/qrcode", CreateQRCodeHandler),
 ])
 
 if __name__ == "__main__":
