@@ -1,31 +1,21 @@
 import tornado.ioloop
-from tornado.web import RequestHandler
-import qrwrapper
+import tornado.options
 
-class CreateQRCodeHandler(RequestHandler):
+import argparse
 
-    QRCODE_HEADERS = [
-                      ('Content-Type', 'image/jpeg'),
-                      ('Content-Disposition', 'attachment; filename=qrcode.jpeg'),
-                     ]
-
-    def get(self):
-        msg = self.get_argument("msg", default=None, strip=False)
-
-        self._apply_headers()
-        
-        with open(qrwrapper.get_new_qrcode_path(msg), 'r') as img:
-            self.write(img.read())
-
-    def _apply_headers(self):
-        for header in self.QRCODE_HEADERS:
-            self.set_header(*header)
-        
+from handlers.qr import (CreateQRCodeHandler,
+                         GetQRCodeHandler)
 
 application = tornado.web.Application([
     (r"/qrcode", CreateQRCodeHandler),
+    (r"/get_qrcode", GetQRCodeHandler),
 ])
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="ShareIt API Server")
+    parser.add_argument('config_path', metavar='c', type=str, help="Path to config file")
+    args = parser.parse_args()
+    tornado.options.parse_config_file(args.config_path)
+
     application.listen(8888)
     tornado.ioloop.IOLoop.instance().start()
