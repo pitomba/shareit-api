@@ -25,8 +25,6 @@ class CreateQRCodeHandler(RequestHandler):
         
         file_name = string_generator.get_new_random_file_name()
 
-        print '1st key', file_name
-
         connection = connect_db()
         cursor = connection.cursor()
         cursor.execute('INSERT INTO images (key, msg) \
@@ -55,8 +53,6 @@ class GetQRCodeHandler(RequestHandler):
     def get(self):
 
         key = self.get_argument("key", default=None, strip=False)
-
-        print '2nd key', key
 
         connection = connect_db()
         cursor = connection.cursor()
