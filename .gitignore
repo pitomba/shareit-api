@@ -1,10 +1,9 @@
 *.py[cod]
-<<<<<<< HEAD
 *.jpeg
 
+*.db
+
 .DS_Store
-=======
->>>>>>> ff916dd9c6361919277f0378d856b7968bdc60ff
 
 # C extensions
 *.so
