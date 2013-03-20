@@ -2,3 +2,5 @@ Make qrwrapper a context manager?
 Write tornado tests
 Message Queueing
 Use HTTP methods on request
+Tornado configurations
+Tornado daemon
