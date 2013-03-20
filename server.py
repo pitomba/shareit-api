@@ -1,6 +1,8 @@
 import tornado.ioloop
 import tornado.options
 
+import sqlite3
+
 import argparse
 
 from handlers.qr import (CreateQRCodeHandler,
@@ -12,9 +14,13 @@ def parse_configs():
     args = parser.parse_args()
     tornado.options.parse_config_file(args.config_path)
 
+# XXX - Prototyping only. Will use message queueing to process
+def connect_db():
+    return sqlite3.connect('shareit.db')
+
 application = tornado.web.Application([
-    (r"/qrcode", CreateQRCodeHandler),
-    (r"/get_qrcode/(base64|raw)", GetQRCodeHandler),
+    (r"/qrcode", CreateQRCodeHandler, dict(db_connection=connect_db())),
+    (r"/get_qrcode/(base64|raw)", GetQRCodeHandler, dict(db_connection=connect_db())),
 ])
 
 if __name__ == "__main__":

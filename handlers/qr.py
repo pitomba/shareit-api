@@ -8,19 +8,18 @@ import base64
 
 import sqlite3
 
-# TODO - Create pooling
-# XXX - Search for better place to do this in tornado
-def connect_db():
-    return sqlite3.connect('shareit.db')
-
-
 # XXX - Change to correct domain
 DEFAULT_HEADERS = [
-                   ('Access-Control-Allow-Origin', '*'),
+                    ('Access-Control-Allow-Origin', '*'),
                   ]
 
+class BaseHandler(RequestHandler):
 
-class CreateQRCodeHandler(RequestHandler):
+    def initialize(self, db_connection):
+        self.db_connection = db_connection
+
+
+class CreateQRCodeHandler(BaseHandler):
 
     RESPONSE_HEADERS = [
                         ('Content-Type', 'application/json'),
@@ -50,17 +49,18 @@ class CreateQRCodeHandler(RequestHandler):
         return json.dumps(response)
 
 
+    # TODO - Put msg into a msg queue to be processed
+    # Solution now is a prototype
     def _start_msg_processing(self, file_name, msg):
         SQL = 'INSERT INTO images (key, msg) \
                VALUES (?, ?)'
 
-        connection = connect_db()
-        cursor = connection.cursor()
+        cursor = self.db_connection.cursor()
         cursor.execute(SQL, (file_name, msg))
-        connection.commit()
+        self.db_connection.commit()
 
 
-class GetQRCodeHandler(RequestHandler):
+class GetQRCodeHandler(BaseHandler):
 
     RAW_RESPONSE_HEADERS = [
                              ('Content-Type', 'image/jpeg'),
@@ -72,6 +72,7 @@ class GetQRCodeHandler(RequestHandler):
                               ]
 
     KEY_PARAM_NAME = 'key'
+
 
     def get(self, type):
 
@@ -107,8 +108,7 @@ class GetQRCodeHandler(RequestHandler):
 
         MSG_INDEX = 0
 
-        connection = connect_db()
-        cursor = connection.cursor()
+        cursor = self.db_connection.cursor()
         cursor.execute(SQL, {'key':key})
         
         fetch = cursor.fetchone()[MSG_INDEX]
