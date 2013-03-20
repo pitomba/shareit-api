@@ -1,4 +1,5 @@
 import qrcode
+from string_generator import get_new_random_file_name
 
 def get_new_qrcode_path(msg):
     image = create_qrcode(msg)
@@ -12,11 +13,6 @@ def create_qrcode(msg):
 
 
 def save_image(image):
-    image_path = random_string()
+    image_path = get_new_random_file_name()
     image.save(image_path)
     return image_path
-
-
-def random_string():
-    # TODO - Make it random!
-    return 'random'
