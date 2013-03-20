@@ -1,2 +1,4 @@
 Make qrwrapper a context manager?
 Write tornado tests
+Message Queueing
+Use HTTP methods on request
