@@ -1,4 +1,5 @@
 shareit-api
 ===========
 
-ShareIt API
+ShareIt API(Alphas)
+Lots of things to change and do. Prototyping right now.
