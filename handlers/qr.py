@@ -43,7 +43,7 @@ class CreateQRCodeHandler(BaseHandler):
 
     def _get_json(self, file_name):
         # XXX - Change this!
-        URL = '10.71.11.214:8888/get_qrcode?key=%s' % file_name
+        URL = '10.71.11.214:8888/get_qrcode/base64?key=%s' % file_name
 
         response = { 'url': URL }
         return json.dumps(response)
